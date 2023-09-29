@@ -2,15 +2,17 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 
+
 app.use(express.json());
-app.use(
-    morgan(':method :url :status :res[content-length] - :response-time ms - :req-body')
-);
 app.use(express.static('dist'));
 
 morgan.token("req-body", (req) => {
     return JSON.stringify(req.body);
 });
+
+app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms - :req-body')
+);
 
 let phoneBook = [
     {
@@ -40,11 +42,12 @@ app.get('/api/persons', (request, response) => {
 });
 
 app.get('/api/persons/:id', (req, res) => {
+
     const id = Number(req.params.id);
     const person = phoneBook.find(person => person.id === id);
 
     if (person) {
-        res.send(person);
+        res.json(person);
     } else {
         res.status(404).end();
     }
