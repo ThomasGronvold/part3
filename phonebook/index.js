@@ -3,14 +3,14 @@ const app = express();
 const morgan = require("morgan");
 
 app.use(express.json());
+app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms - :req-body')
+);
+app.use(express.static('dist'));
 
 morgan.token("req-body", (req) => {
     return JSON.stringify(req.body);
 });
-
-app.use(
-    morgan(':method :url :status :res[content-length] - :response-time ms - :req-body')
-);
 
 let phoneBook = [
     {
@@ -48,7 +48,6 @@ app.get('/api/persons/:id', (req, res) => {
     } else {
         res.status(404).end();
     }
-
 });
 
 app.get('/info', (req, res) => {
@@ -78,7 +77,6 @@ app.post('/api/persons', (req, res) => {
         });
     }
 
-
     const id = (Math.floor(Math.random() * 10000));
 
     const newPerson = {
@@ -94,11 +92,8 @@ app.post('/api/persons', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id);
     phoneBook = phoneBook.filter(person => person.id !== id);
-
     res.status(204).end();
 });
-
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
