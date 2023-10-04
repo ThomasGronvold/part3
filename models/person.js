@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 mongoose.set('strictQuery', false);
@@ -18,8 +18,25 @@ mongoose.connect(url)
   });
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true,
+  },
+  number: {
+    type: String,
+    minLength: 8,
+    required: true,
+    validate: {
+      validator: (value) => {
+        /* 
+          Checks if you have 2 or 3 numbers in the front, and checks the length of numbers in the back to
+          find out if the Phone-number is atleast 8 numbers long. 
+        */
+        return /^(?:[0-9]{2}-[0-9]{6,}|[0-9]{3}-[0-9]{5,})$/.test(value);
+      }
+    }
+  }
 });
 
 personSchema.set('toJSON', {
